@@ -26,8 +26,15 @@ xcrun notarytool store-credentials "$NOTARY_PROFILE" --apple-id '公司团队成
 ./scripts/package-dmg.sh
 ```
 
-如果本机有多张相同团队的有效 Developer ID Application 证书，先将 SIGNING_SHA1 设为选定证书在 find-identity 中的 40 位指纹。每次正式发布前更新 Xcode 工程中的版本或构建号。脚本依次检查证书、公证凭据，归档，签应用，创建并签 DMG，等待 Apple 返回 Accepted，装订票据，再用 stapler、codesign、Gatekeeper 校验。全部成功后输出 dist/LightPin-版本-构建号-arm64.dmg。向用户分发这个文件；私有仓库的 Release 默认仅仓库成员可见。
+如果本机有多张相同团队的有效 Developer ID Application 证书，先将 SIGNING_SHA1 设为选定证书在 find-identity 中的 40 位指纹。每次正式发布前更新 Xcode 工程中的版本或构建号。脚本依次检查证书、公证凭据，归档，签应用，创建并签 DMG，等待 Apple 返回 Accepted，装订票据，再用 stapler、codesign、Gatekeeper 校验。全部成功后输出 dist/LightPin-版本-构建号-arm64.dmg。发布时将正式 DMG 和对应的 SHA-256 校验文件一起上传至 GitHub Release，用户可从项目首页进入下载。
 
 每次构建的 dist/dmg-release.* 目录保留归档及公证回执，失败时检查终端提示的路径。若 Apple 已收到请求但等待中断，使用回执中的 ID 和 notarytool info 或 log 检查该请求。正式发布前，在另一台 Mac 用浏览器下载 DMG，拖入“应用程序”，验证 Gatekeeper 首次打开、截图授权及旧版覆盖升级。换用公司标识后首次启动可能需要重新授权并产生新的沙盒容器。
 
 [Apple 证书申请](https://developer.apple.com/help/account/certificates/create-developer-id-certificates/) · [Apple 公证说明](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution/) · [公证凭据配置](https://developer.apple.com/documentation/technotes/tn3147-migrating-to-the-latest-notarization-tool)
+
+## 本地开发与其他构建方式
+
+自用 PKG、公开发行的 DMG 和 Mac App Store 归档各自使用不同的签名流程。上文的 `package-dmg.sh` 用于公开发行。
+
+- **本机安装测试**　在项目根目录运行 `python3 scripts/setup-signing.py` 配置本机签名，再运行 `scripts/package-app.sh` 生成 `dist/LightPin.pkg`。退出旧版后安装到固定位置 `/Applications/LightPin.app`。开发期间沿用同一签名身份，可减少身份变动引起的重新授权。
+- **Mac App Store 归档**　在 Xcode 的 Signing & Capabilities 选择发行团队，设置与 App Store Connect 记录一致的 Bundle ID。工程包含 App Sandbox、用户所选文件读写权限和隐私清单。通过 Product → Archive 创建归档，在 Organizer 中运行 Validate App。提交审核前还需补齐发行主体联系方式，并在 App Store Connect 填写公开的隐私政策 URL。
