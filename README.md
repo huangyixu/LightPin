@@ -1,8 +1,14 @@
-# LightPin 0.5.7
+# LightPin
 
 Apple 芯片 macOS 截图工具，常驻菜单栏，不显示 Dock 图标。翻译仅预留接口，不联网。
 
-## 安装与更新
+## Mac App Store 版本（0.8.0，构建 28）
+
+用 Xcode 打开 `LightPin.xcodeproj` 并选择 LightPin scheme。当前支持 Apple 芯片和 macOS 14 及以上版本。在 Signing & Capabilities 选择实际公司团队，将 Bundle Identifier 设置为该团队在开发者后台注册、与 App Store Connect 记录一致的标识。Product → Archive 后在 Organizer 运行 Validate App。
+
+商店目标开启 App Sandbox、用户选择文件的读写和 Hardened Runtime。历史保存在容器中的 Application Support，可从控制页打开。隐私政策与隐私清单随应用打包；提交前由发行主体补充有效联系渠道并将政策发布为公开 HTTPS 页面，在 App Store Connect 填写其 URL。仅本地验证可在 xcodebuild archive 时覆盖 CODE_SIGN_IDENTITY=- 和 CODE_SIGN_STYLE=Manual；正式验证使用公司团队签名。
+
+## 自用版安装与更新
 
 退出旧版后双击 `.pkg` 安装包。始终更新 `/Applications/LightPin.app`，不再解压出新副本。误开另一份应用时会唤起已有实例。
 
@@ -49,11 +55,11 @@ Apple 芯片 macOS 截图工具，常驻菜单栏，不显示 Dock 图标。翻�
 
 ## 数据与权限
 
-文字识别使用本机 Vision；翻译尚未接入服务。完成后的图片保存于 `~/Library/Application Support/LightPin/Captures`，控制窗口显示最近 30 条，历史不自动清理。取消截图不保存。
+文字识别使用本机 Vision；翻译尚未接入服务。完成后的图片保存于应用的 Application Support 目录下的 `LightPin/Captures`，控制窗口显示最近 30 条，历史不自动清理。取消截图不保存。
 
 关闭控制窗口只隐藏界面，退出请使用菜单栏的退出命令或 Command + Q。当前不设置开机启动。
 
-屏幕录制异常时可使用控制窗口“权限问题修复…”。重置只针对 `local.lightpin.app`，需要用户在界面确认，不自动修改系统隐私权限。
+拒绝授权后，可从控制窗口打开系统屏幕录制设置。授权后点击“重新尝试”，或按系统提示重新启动应用。
 
 ## 构建与验证
 

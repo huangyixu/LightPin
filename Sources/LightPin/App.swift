@@ -167,7 +167,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         root.addArrangedSubview(scroll)
         scroll.widthAnchor.constraint(equalTo: root.widthAnchor, constant: -56).isActive = true
         scroll.heightAnchor.constraint(greaterThanOrEqualToConstant: 160).isActive = true
-        root.addArrangedSubview(NSStackView(views: [button("屏幕录制设置", target: self, action: #selector(openPermissions)), button("权限问题修复…", target: self, action: #selector(showPermissionHelp))]))
+        root.addArrangedSubview(NSStackView(views: [button("屏幕录制设置", target: self, action: #selector(openPermissions)), button("隐私政策", target: self, action: #selector(showPrivacy))]))
         w.center(); home = NSWindowController(window: w)
     }
     func applicationDidBecomeActive(_ notification: Notification) {
@@ -311,35 +311,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func showPermissionHelp() {
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
-        alert.messageText = "已打开权限，但仍无法截图？"
-        alert.informativeText = "系统可能仍保留旧版本的授权。请先退出旧副本，将当前应用放到固定位置，再在屏幕录制设置中删除旧的 LightPin 条目，重新添加并开启当前应用，最后退出重开。\n\n当前运行位置：\n" + Bundle.main.bundleURL.path + "\n\n若仍无效，可选择重置，仅清除此应用的屏幕录制授权。处理后点击‘重新尝试’才会再次调用截图接口。"
+        alert.messageText = "需要允许 LightPin 读取屏幕"
+        alert.informativeText = "在系统设置的屏幕录制权限中开启 LightPin，再重新尝试截图。如果 macOS 提示重新启动，请按提示操作。"
         alert.addButton(withTitle: "打开系统设置")
-        alert.addButton(withTitle: "已处理，重新尝试")
-        alert.addButton(withTitle: "重置此应用授权…")
-        alert.addButton(withTitle: "稍后")
+        alert.addButton(withTitle: "重新尝试")
+        alert.addButton(withTitle: "取消")
         switch alert.runModal() {
         case .alertFirstButtonReturn: openPermissions()
         case .alertSecondButtonReturn: capturePermission.retryRequested(); capture()
-        case .alertThirdButtonReturn: confirmPermissionReset()
         default: break
         }
     }
-    func confirmPermissionReset() {
-        let alert = NSAlert(); alert.alertStyle = .warning
-        alert.messageText = "重置 LightPin 的屏幕录制授权并退出？"
-        alert.informativeText = "只清除 local.lightpin.app 的屏幕录制授权，不影响其他应用。重置后请重新打开当前应用，按截图快捷键，并在系统设置中重新允许。系统要求时，再退出并重开一次。"
-        alert.addButton(withTitle: "重置并退出"); alert.addButton(withTitle: "取消")
-        guard alert.runModal() == .alertFirstButtonReturn else { return }
-        let process = Process(); process.executableURL = URL(fileURLWithPath: "/usr/bin/tccutil")
-        process.arguments = ["reset", "ScreenCapture", "local.lightpin.app"]
-        process.standardOutput = FileHandle.nullDevice; process.standardError = FileHandle.nullDevice
-        process.terminationHandler = { process in
-            DispatchQueue.main.async {
-                if process.terminationStatus == 0 { NSApp.terminate(nil) }
-                else { showError("系统未能重置授权。请在屏幕录制设置中删除 LightPin 条目，再重新添加当前应用。") }
-            }
+    @objc func showPrivacy() {
+        guard let url = Bundle.main.url(forResource: "Privacy", withExtension: "html") else {
+            showError("未找到隐私政策文件。")
+            return
         }
-        do { try process.run() } catch { showError(error.localizedDescription) }
+        NSWorkspace.shared.open(url)
     }
     @objc func openPermissions() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture") { NSWorkspace.shared.open(url) }

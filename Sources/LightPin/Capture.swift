@@ -308,7 +308,7 @@ final class SelectionView: NSView, NSTextFieldDelegate {
         undoButton = icon("arrow.uturn.backward", title: "撤销 ⌘Z", action: #selector(undo)); toolbar.addArrangedSubview(undoButton)
         redoButton = icon("arrow.uturn.forward", title: "重做 ⌘⇧Z", action: #selector(redo)); toolbar.addArrangedSubview(redoButton)
         reselectButton = icon("chevron.backward", title: "返回选区阶段 / 右键", action: #selector(goBack)); toolbar.addArrangedSubview(reselectButton)
-        ocrButton = icon("text.viewfinder", title: "识别文字 / 翻译接口", action: #selector(recognize)); toolbar.addArrangedSubview(ocrButton)
+        ocrButton = icon("text.viewfinder", title: "识别文字", action: #selector(recognize)); toolbar.addArrangedSubview(ocrButton)
         let scrollButton = icon("arrow.up.and.down.square", title: "区域滚动截图（先框选，再向下滚动）", action: #selector(beginScroll))
         toolbar.addArrangedSubview(scrollButton)
         scrollButton.isHidden = true

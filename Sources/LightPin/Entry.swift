@@ -3,6 +3,7 @@ import AppKit
 struct LightPinEntry {
     @MainActor static func main() {
         let app = NSApplication.shared
+        #if !APP_STORE
         if let index = CommandLine.arguments.firstIndex(of: "--smoke-test"), CommandLine.arguments.count > index + 1 {
             app.setActivationPolicy(.accessory)
             do { try runSmokeCheck(directory: CommandLine.arguments[index + 1]) }
@@ -16,6 +17,7 @@ struct LightPinEntry {
             running.activate(options: [])
             return
         }
+        #endif
         let delegate = AppDelegate()
         app.delegate = delegate
         withExtendedLifetime(delegate) { app.run() }
