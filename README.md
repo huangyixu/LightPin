@@ -1,5 +1,7 @@
 # LightPin
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Apple 芯片 macOS 截图工具，常驻菜单栏，不显示 Dock 图标。翻译仅预留接口，不联网。
 
 ## DMG 站外发行
@@ -88,3 +90,7 @@ CLANG_MODULE_CACHE_PATH="$PWD/.build/clang-cache" swift test --disable-sandbox -
 仅在选中标注工具时显示，恢复拖动选区状态、返回或调整区域时隐藏。区域标注、箭头和画笔显示线宽及颜色；文字显示字号及颜色；色块覆盖仅显示颜色；马赛克仅显示强度。提供 2/4/8pt 快捷线宽、精确数值下拉、六种常用色和系统自定义取色盘。
 
 主工具栏和二级面板作为整体布局，靠近屏幕底部时整体移到选区上方，二级面板仍位于主工具栏下方；窄屏可横向滚动。显示与隐藏不改变当前颜色和线宽设置。
+
+## 开源协议
+
+LightPin 采用 [MIT License](LICENSE) 发布。分发本软件或其实质性部分时，请保留版权声明和许可声明。
