@@ -2,6 +2,10 @@
 
 Apple 芯片 macOS 截图工具，常驻菜单栏，不显示 Dock 图标。翻译仅预留接口，不联网。
 
+## DMG 站外发行
+
+[公司签名、公证与 DMG 发布说明](Developer-ID.md)。发布脚本为 `scripts/package-dmg.sh`。
+
 ## Mac App Store 版本（0.8.0，构建 28）
 
 用 Xcode 打开 `LightPin.xcodeproj` 并选择 LightPin scheme。当前支持 Apple 芯片和 macOS 14 及以上版本。在 Signing & Capabilities 选择实际公司团队，将 Bundle Identifier 设置为该团队在开发者后台注册、与 App Store Connect 记录一致的标识。Product → Archive 后在 Organizer 运行 Validate App。
